@@ -240,7 +240,7 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
               );
             })}
           </div>
-          <div id="skills-no-results" class="hidden mt-4 p-3 text-sm text-[var(--color-text-secondary)] bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-md" data-i18n="skillsSearchNoResults">
+          <div id="skills-no-results" class="mt-4 p-3 text-sm text-[var(--color-text-secondary)] bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-md" data-i18n="skillsSearchNoResults">
             {t.skillsSearchNoResults}
           </div>
         </div>
@@ -535,14 +535,7 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
         if (shouldShow) hasVisibleSkills = true;
       });
       
-      // Show/hide disclaimer based on search filter being applied
-      if (skillsNoResults) {
-        if (query.length > 0 && !hasVisibleSkills) {
-          skillsNoResults.classList.remove("hidden");
-        } else {
-          skillsNoResults.classList.add("hidden");
-        }
-      }
+      // Disclaimer is always visible - no need to show/hide
       
       // Scroll to skills section when user starts typing and there are visible skills
       if (query.length > 0 && hasVisibleSkills && skillsSection) {
