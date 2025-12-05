@@ -181,21 +181,55 @@ function calculateSkillYears(
     }
   };
   
+  const allTechnologies = new Set<string>();
+  
   for (const exp of experience) {
     const period = parsePeriod(exp.period);
     for (const tech of exp.technologies) {
+      allTechnologies.add(tech);
       addTechnology(tech, period);
+    }
+  }
+  
+  for (const project of projects) {
+    for (const tech of project.technologies) {
+      allTechnologies.add(tech);
     }
   }
   
   // Projects don't contribute to years calculation - they're just for concept skills
   
   const skills: Array<{ name: string; years: number | null; keywords: string[] }> = [];
+  const addedSkills = new Set<string>();
+  
   for (const [tech, periods] of techPeriods.entries()) {
     if (conceptSkills.has(tech)) continue;
     const years = calculateYears(periods);
     if (years !== null && years > 0) {
       skills.push({ name: tech, years, keywords: getSkillKeywords(tech) });
+      addedSkills.add(tech);
+    }
+  }
+  
+  // Include technologies that appear in experience/projects but have less than 6 months
+  // or weren't added to techPeriods for some reason
+  for (const tech of allTechnologies) {
+    if (conceptSkills.has(tech)) continue;
+    if (addedSkills.has(tech)) continue;
+    
+    if (!techPeriods.has(tech)) {
+      // Technology was mentioned but not processed (shouldn't happen, but just in case)
+      skills.push({ name: tech, years: null, keywords: getSkillKeywords(tech) });
+      addedSkills.add(tech);
+    } else {
+      // Check if it has periods but less than 6 months
+      const periods = techPeriods.get(tech)!;
+      const years = calculateYears(periods);
+      if (years === null && periods.length > 0) {
+        // Has periods but less than 6 months - include it with null years
+        skills.push({ name: tech, years: null, keywords: getSkillKeywords(tech) });
+        addedSkills.add(tech);
+      }
     }
   }
   
@@ -270,7 +304,7 @@ export const profile = {
         "Modernized NodeJS codebase, tripling startup speed and improving developer experience",
         "Implemented observability features (metrics and alerts), reducing incident detection and resolution time",
       ],
-      technologies: ["Node.js", "NestJS", "Express", "Puppeteer", "RabbitMQ", "GCP"],
+      technologies: ["Node.js", "NestJS", "Express", "Puppeteer", "BullMQ", "RabbitMQ", "GCP"],
     },
     {
       role: "Fullstack Developer",
