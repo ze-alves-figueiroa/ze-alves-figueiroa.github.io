@@ -10,6 +10,9 @@ export const translations = {
       languages: "Languages",
       interests: "Interests",
     },
+    skillsSearch: "Hey HR, want to check if I know a specific tech? Search here.",
+    skillsSearchNoResults: "Didn't find the tech you were looking for? Check my LinkedIn, my résumé, or send me a message — I may have forgotten to list it here.",
+    cvDownload: "Resume",
     location: "Recife, Brazil",
     months: {
       "Jan": "Jan", "Feb": "Feb", "Mar": "Mar", "Apr": "Apr", "May": "May", "Jun": "Jun",
@@ -128,6 +131,9 @@ export const translations = {
       languages: "Idiomas",
       interests: "Interesses",
     },
+    skillsSearch: "Ei, RH. Quer saber se eu domino alguma tecnologia? Procure aqui.",
+    skillsSearchNoResults: "Não achou a tecnologia que está procurando? Verifique meu LinkedIn, meu currículo ou me mande uma mensagem — posso ter deixado algo de fora aqui.",
+    cvDownload: "Currículo",
     location: "Recife, Brasil",
     months: {
       "Jan": "Jan", "Feb": "Fev", "Mar": "Mar", "Apr": "Abr", "May": "Mai", "Jun": "Jun",
@@ -246,6 +252,9 @@ export const translations = {
       languages: "Langues",
       interests: "Centres d'intérêt",
     },
+    skillsSearch: "Bonjour RH, vous souhaitez vérifier si je maîtrise une technologie ? Cherchez ici.",
+    skillsSearchNoResults: "Vous n'avez pas trouvé la technologie que vous cherchiez ? Consultez mon LinkedIn, mon CV ou envoyez-moi un message — j'ai peut-être oublié de l'ajouter ici.",
+    cvDownload: "Curriculum Vitæ",
     location: "Recife, Brésil",
     months: {
       "Jan": "Janv", "Feb": "Févr", "Mar": "Mars", "Apr": "Avr", "May": "Mai", "Jun": "Juin",
