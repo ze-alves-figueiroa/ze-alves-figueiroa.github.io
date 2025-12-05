@@ -200,9 +200,19 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
           <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
         </summary>
         <div class="mt-4">
-          <p class="text-sm text-[var(--color-text-secondary)]">
-            {profile.skills.join(" · ")}
-          </p>
+          <div class="flex flex-wrap gap-2">
+            {profile.skills.map((skill) => {
+              const skillName = typeof skill === "string" ? skill : skill.name;
+              const years = typeof skill === "string" ? null : skill.years;
+              const yearsText = years !== null && years > 0 ? `${years}${years === 1 ? "yr" : "yrs"}` : "";
+              return (
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md bg-[var(--color-bg-subtle)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">
+                  <span>{skillName}</span>
+                  {yearsText && <span class="text-[var(--color-text-muted)]">({yearsText})</span>}
+                </span>
+              );
+            })}
+          </div>
         </div>
       </details>
     </section>

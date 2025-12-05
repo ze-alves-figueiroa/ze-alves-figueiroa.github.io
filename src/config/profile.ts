@@ -1,3 +1,170 @@
+type Period = {
+  start: Date;
+  end: Date | null;
+};
+
+const monthMap: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+
+function parsePeriod(periodStr: string): Period | null {
+  const match = periodStr.match(/(\w{3})\s+(\d{4})\s+—\s+(Present|(\w{3})\s+(\d{4}))/);
+  if (!match) return null;
+  
+  const startMonth = monthMap[match[1]];
+  const startYear = parseInt(match[2]);
+  const start = new Date(startYear, startMonth, 1);
+  
+  let end: Date | null = null;
+  if (match[3] === "Present") {
+    end = new Date();
+  } else if (match[4] && match[5]) {
+    const endMonth = monthMap[match[4]];
+    const endYear = parseInt(match[5]);
+    end = new Date(endYear, endMonth + 1, 0);
+  }
+  
+  return { start, end };
+}
+
+function calculateYears(periods: Period[]): number {
+  if (periods.length === 0) return 0;
+  
+  const sorted = [...periods].sort((a, b) => a.start.getTime() - b.start.getTime());
+  const merged: Period[] = [];
+  
+  for (const period of sorted) {
+    if (merged.length === 0) {
+      merged.push({ ...period });
+      continue;
+    }
+    
+    const last = merged[merged.length - 1];
+    const lastEnd = last.end || new Date();
+    const currentStart = period.start;
+    
+    if (currentStart <= lastEnd) {
+      const newEnd = !last.end || !period.end
+        ? null
+        : new Date(Math.max(lastEnd.getTime(), period.end.getTime()));
+      last.end = newEnd;
+    } else {
+      merged.push({ ...period });
+    }
+  }
+  
+  const totalMs = merged.reduce((sum, p) => {
+    const end = p.end || new Date();
+    return sum + (end.getTime() - p.start.getTime());
+  }, 0);
+  
+  return Math.round((totalMs / (1000 * 60 * 60 * 24 * 365.25)) * 10) / 10;
+}
+
+type ExperienceEntry = {
+  period: string;
+  technologies: readonly string[];
+};
+
+type ProjectEntry = {
+  technologies: readonly string[];
+};
+
+function calculateSkillYears(
+  experience: readonly ExperienceEntry[],
+  projects: readonly ProjectEntry[]
+): Array<{ name: string; years: number | null }> {
+  const techPeriods = new Map<string, Period[]>();
+  const conceptSkills = new Set(["Microservices", "Computer Vision", "IoT"]);
+  
+  const addTechnology = (tech: string, period: Period | null) => {
+    if (!period || conceptSkills.has(tech)) return;
+    
+    const key = tech;
+    if (!techPeriods.has(key)) {
+      techPeriods.set(key, []);
+    }
+    techPeriods.get(key)!.push(period);
+    
+    if (tech === "Node.js" || tech.includes("Node")) {
+      const jsKey = "JavaScript";
+      if (!techPeriods.has(jsKey)) {
+        techPeriods.set(jsKey, []);
+      }
+      techPeriods.get(jsKey)!.push(period);
+    }
+    
+    if (tech === "TypeScript" || tech === "TS") {
+      const tsKey = "TypeScript";
+      if (!techPeriods.has(tsKey)) {
+        techPeriods.set(tsKey, []);
+      }
+      techPeriods.get(tsKey)!.push(period);
+    }
+    
+    if (tech === "AWS Lambda" || tech.startsWith("AWS")) {
+      const awsKey = "AWS";
+      if (!techPeriods.has(awsKey)) {
+        techPeriods.set(awsKey, []);
+      }
+      techPeriods.get(awsKey)!.push(period);
+    }
+  };
+  
+  for (const exp of experience) {
+    const period = parsePeriod(exp.period);
+    for (const tech of exp.technologies) {
+      addTechnology(tech, period);
+    }
+  }
+  
+  for (const project of projects) {
+    for (const tech of project.technologies) {
+      if (conceptSkills.has(tech)) {
+        continue;
+      }
+      const period = parsePeriod("Jan 2020 — Present");
+      addTechnology(tech, period);
+    }
+  }
+  
+  const skills: Array<{ name: string; years: number | null }> = [];
+  for (const [tech, periods] of techPeriods.entries()) {
+    if (conceptSkills.has(tech)) continue;
+    const years = calculateYears(periods);
+    if (years > 0) {
+      skills.push({ name: tech, years });
+    }
+  }
+  
+  for (const tech of conceptSkills) {
+    let found = false;
+    for (const exp of experience) {
+      if (exp.technologies.includes(tech)) {
+        found = true;
+        break;
+      }
+    }
+    for (const project of projects) {
+      if (project.technologies.includes(tech)) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      skills.push({ name: tech, years: null });
+    }
+  }
+  
+  return skills.sort((a, b) => {
+    if (a.years === null && b.years === null) return a.name.localeCompare(b.name);
+    if (a.years === null) return 1;
+    if (b.years === null) return -1;
+    return b.years - a.years;
+  });
+}
+
 export const profile = {
   name: "José Ricardo Alves Figueirôa",
   title: "Senior Software Engineer",
@@ -133,11 +300,9 @@ export const profile = {
     },
   ],
   
-  skills: [
-    "JavaScript", "TypeScript", "Node.js", "NestJS", "Express",
-    "GCP", "AWS", "Puppeteer", "RabbitMQ", "PostgreSQL",
-    "Angular", "Docker", "Java Spring Boot", "NoSQL",
-  ],
+  get skills() {
+    return calculateSkillYears(this.experience, this.projects);
+  },
   
   languages: [
     { name: "Portuguese", level: "Native" },
