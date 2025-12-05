@@ -200,13 +200,26 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
           <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
         </summary>
         <div class="mt-4">
-          <div class="flex flex-wrap gap-2">
+          <div class="mb-4">
+            <input
+              type="text"
+              id="skills-search"
+              placeholder="Search skills..."
+              class="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border)] focus:border-[var(--color-border)]"
+            />
+          </div>
+          <div id="skills-container" class="flex flex-wrap gap-2">
             {profile.skills.map((skill) => {
               const skillName = typeof skill === "string" ? skill : skill.name;
               const years = typeof skill === "string" ? null : skill.years;
+              const keywords = typeof skill === "string" ? [skillName.toLowerCase()] : (skill.keywords || [skillName.toLowerCase()]);
               const yearsText = years !== null && years > 0 ? `${years}${years === 1 ? "yr" : "yrs"}` : "";
               return (
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md bg-[var(--color-bg-subtle)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">
+                <span 
+                  class="skill-badge inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md bg-[var(--color-bg-subtle)] text-[var(--color-text-secondary)] border border-[var(--color-border)]"
+                  data-skill-name={skillName.toLowerCase()}
+                  data-skill-keywords={keywords.join(" ")}
+                >
                   <span>{skillName}</span>
                   {yearsText && <span class="text-[var(--color-text-muted)]">({yearsText})</span>}
                 </span>
@@ -366,4 +379,23 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
       }
     });
   });
+  
+  // Skills search functionality
+  const skillsSearchInput = document.getElementById("skills-search");
+  const skillsContainer = document.getElementById("skills-container");
+  
+  if (skillsSearchInput && skillsContainer) {
+    skillsSearchInput.addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const skillBadges = skillsContainer.querySelectorAll(".skill-badge");
+      
+      skillBadges.forEach((badge) => {
+        const skillName = badge.getAttribute("data-skill-name") || "";
+        const keywords = badge.getAttribute("data-skill-keywords") || "";
+        const searchText = `${skillName} ${keywords}`;
+        const shouldShow = query === "" || searchText.includes(query);
+        badge.style.display = shouldShow ? "" : "none";
+      });
+    });
+  }
 </script>

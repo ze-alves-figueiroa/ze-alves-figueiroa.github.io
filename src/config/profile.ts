@@ -28,8 +28,8 @@ function parsePeriod(periodStr: string): Period | null {
   return { start, end };
 }
 
-function calculateYears(periods: Period[]): number {
-  if (periods.length === 0) return 0;
+function calculateYears(periods: Period[]): number | null {
+  if (periods.length === 0) return null;
   
   const sorted = [...periods].sort((a, b) => a.start.getTime() - b.start.getTime());
   const merged: Period[] = [];
@@ -59,7 +59,16 @@ function calculateYears(periods: Period[]): number {
     return sum + (end.getTime() - p.start.getTime());
   }, 0);
   
-  return Math.round((totalMs / (1000 * 60 * 60 * 24 * 365.25)) * 10) / 10;
+  const years = totalMs / (1000 * 60 * 60 * 24 * 365.25);
+  
+  // If less than 6 months, return null (don't show)
+  if (years < 0.5) {
+    return null;
+  }
+  
+  // Round: >= 0.5 but < 1.6 -> 1, >= 1.6 but < 2.6 -> 2, etc.
+  // Using Math.floor(years + 0.4) with minimum of 1 to handle 0.5-1.5 range
+  return Math.max(1, Math.floor(years + 0.4));
 }
 
 type ExperienceEntry = {
@@ -71,10 +80,43 @@ type ProjectEntry = {
   technologies: readonly string[];
 };
 
+function getSkillKeywords(name: string): string[] {
+  const keywordMap: Record<string, string[]> = {
+    "JavaScript": ["js", "javascript", "node", "nodejs", "ts", "typescript", "react"],
+    "TypeScript": ["ts", "typescript", "js", "javascript", "node", "nodejs"],
+    "Node.js": ["node", "nodejs", "js", "javascript", "ts", "typescript", "backend", "server"],
+    "AWS": ["aws", "amazon", "cloud", "amazon cloud", "infrastructure", "cloud-native"],
+    "GCP": ["gcp", "google cloud", "cloud", "google", "infrastructure", "cloud-native"],
+    "Terraform": ["terraform", "infrastructure", "cloud-native", "iac", "cloud"],
+    "React": ["react", "reactjs", "js", "javascript", "frontend"],
+    "Next.js": ["next", "nextjs", "next.js", "react", "javascript", "typescript", "ssr", "frontend"],
+    "Angular": ["angular", "angularjs", "angular.js", "javascript", "typescript", "frontend"],
+    "Vue.js": ["vue", "vuejs", "vue.js", "javascript", "typescript", "frontend"],
+    "PostgreSQL": ["postgres", "postgresql", "sql", "database", "relational"],
+    "MongoDB": ["mongo", "mongodb", "nosql", "database", "non-relational"],
+    "Docker": ["docker", "container"],
+    "Express": ["express", "expressjs", "node", "nodejs", "js", "javascript", "ts", "typescript", "backend", "server"],
+    "NestJS": ["nest", "nestjs", "node", "nodejs", "js", "javascript", "ts", "typescript", "backend", "server"],
+    "Puppeteer": ["puppeteer"],
+    "RabbitMQ": ["rabbitmq", "rabbit", "mq", "rmq", "event", "message", "queue"],
+    "BullMQ": ["bullmq", "bull", "mq", "message", "queue"],
+    "Java": ["java"],
+    "Spring Boot": ["spring", "springboot", "spring boot", "java", "jvm", "backend", "server", "microservices"],
+    "Python": ["python", "py"],
+    "Flask": ["flask", "python", "py", "backend", "server"],
+    "D3.js": ["d3", "d3js", "d3.js", "frontend", "visualization"],
+    "Jest": ["jest", "testing", "unit", "integration", "e2e", "end-to-end"],
+    "Firebase": ["firebase", "cloud", "backend", "server"],
+    "n8n": ["n8n", "workflow", "automation", "integration"],
+  };
+  
+  return keywordMap[name] || [name.toLowerCase()];
+}
+
 function calculateSkillYears(
   experience: readonly ExperienceEntry[],
   projects: readonly ProjectEntry[]
-): Array<{ name: string; years: number | null }> {
+): Array<{ name: string; years: number | null; keywords: string[] }> {
   const techPeriods = new Map<string, Period[]>();
   const conceptSkills = new Set(["Microservices", "Computer Vision", "IoT"]);
   
@@ -87,20 +129,47 @@ function calculateSkillYears(
     }
     techPeriods.get(key)!.push(period);
     
+    // Link Node.js, JavaScript, and TypeScript together
     if (tech === "Node.js" || tech.includes("Node")) {
       const jsKey = "JavaScript";
       if (!techPeriods.has(jsKey)) {
         techPeriods.set(jsKey, []);
       }
       techPeriods.get(jsKey)!.push(period);
-    }
-    
-    if (tech === "TypeScript" || tech === "TS") {
+      
       const tsKey = "TypeScript";
       if (!techPeriods.has(tsKey)) {
         techPeriods.set(tsKey, []);
       }
       techPeriods.get(tsKey)!.push(period);
+    }
+    
+    if (tech === "TypeScript" || tech === "TS") {
+      const jsKey = "JavaScript";
+      if (!techPeriods.has(jsKey)) {
+        techPeriods.set(jsKey, []);
+      }
+      techPeriods.get(jsKey)!.push(period);
+      
+      const nodeKey = "Node.js";
+      if (!techPeriods.has(nodeKey)) {
+        techPeriods.set(nodeKey, []);
+      }
+      techPeriods.get(nodeKey)!.push(period);
+    }
+    
+    if (tech === "JavaScript" || tech === "JS") {
+      const tsKey = "TypeScript";
+      if (!techPeriods.has(tsKey)) {
+        techPeriods.set(tsKey, []);
+      }
+      techPeriods.get(tsKey)!.push(period);
+      
+      const nodeKey = "Node.js";
+      if (!techPeriods.has(nodeKey)) {
+        techPeriods.set(nodeKey, []);
+      }
+      techPeriods.get(nodeKey)!.push(period);
     }
     
     if (tech === "AWS Lambda" || tech.startsWith("AWS")) {
@@ -119,22 +188,14 @@ function calculateSkillYears(
     }
   }
   
-  for (const project of projects) {
-    for (const tech of project.technologies) {
-      if (conceptSkills.has(tech)) {
-        continue;
-      }
-      const period = parsePeriod("Jan 2020 — Present");
-      addTechnology(tech, period);
-    }
-  }
+  // Projects don't contribute to years calculation - they're just for concept skills
   
-  const skills: Array<{ name: string; years: number | null }> = [];
+  const skills: Array<{ name: string; years: number | null; keywords: string[] }> = [];
   for (const [tech, periods] of techPeriods.entries()) {
     if (conceptSkills.has(tech)) continue;
     const years = calculateYears(periods);
-    if (years > 0) {
-      skills.push({ name: tech, years });
+    if (years !== null && years > 0) {
+      skills.push({ name: tech, years, keywords: getSkillKeywords(tech) });
     }
   }
   
@@ -153,7 +214,7 @@ function calculateSkillYears(
       }
     }
     if (found) {
-      skills.push({ name: tech, years: null });
+      skills.push({ name: tech, years: null, keywords: getSkillKeywords(tech) });
     }
   }
   
@@ -194,7 +255,7 @@ export const profile = {
         "Platform squad handling thousands of MAU and DAUs",
         "Building and scaling lawtech solutions for legal automation",
       ],
-      technologies: ["Node.js", "TypeScript", "React", "PostgreSQL", "AWS"],
+      technologies: ["Node.js", "TypeScript", "React", "Next.js", "PostgreSQL", "AWS"],
     },
     {
       role: "Backend Developer",
