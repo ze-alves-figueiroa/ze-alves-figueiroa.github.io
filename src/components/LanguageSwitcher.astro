@@ -14,29 +14,26 @@ const flags: Record<Language, string> = {
 };
 ---
 
-<div class="flex items-center gap-3 text-xs">
+<div class="flex items-center gap-1 text-xs border-t border-[var(--color-border)] pt-4 mt-4">
+  <span class="text-[var(--color-text-muted)] mr-2 font-mono text-[0.65rem] uppercase tracking-wider">Lang:</span>
   {supportedLanguages.map((lang) => {
     const isActive = lang === currentLang;
-    const content = (
-      <>
-        <span class="text-base">{flags[lang]}</span>
-        <span class="uppercase tracking-wider">{lang}</span>
-      </>
-    );
     
     return isActive ? (
       <span
-        class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-[var(--color-text-secondary)] font-medium"
+        class="inline-flex items-center gap-1 px-2 py-0.5 text-[var(--color-text-secondary)] font-medium border-b border-[var(--color-text-secondary)]"
         aria-current="page"
       >
-        {content}
+        <span class="text-sm">{flags[lang]}</span>
+        <span class="uppercase tracking-wider">{lang}</span>
       </span>
     ) : (
       <a
         href={`?lang=${lang}`}
-        class="inline-flex items-center gap-1.5 px-2 py-1 rounded transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+        class="inline-flex items-center gap-1 px-2 py-0.5 transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:border-b hover:border-[var(--color-border-subtle)]"
       >
-        {content}
+        <span class="text-sm">{flags[lang]}</span>
+        <span class="uppercase tracking-wider">{lang}</span>
       </a>
     );
   })}

@@ -57,6 +57,43 @@
   .link:hover {
     border-color: var(--color-text);
   }
+  
+  details summary {
+    user-select: none;
+  }
+  
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  details summary .collapse-icon,
+  details summary .expand-icon {
+    display: inline-block;
+  }
+  
+  details[open] summary .collapse-icon {
+    display: inline-block !important;
+  }
+  
+  details[open] summary .expand-icon {
+    display: none !important;
+  }
+  
+  details:not([open]) summary .collapse-icon {
+    display: none !important;
+  }
+  
+  details:not([open]) summary .expand-icon {
+    display: inline-block !important;
+  }
+  
+  .details-section:has(details:not([open])) {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .details-section:has(details[open]) {
+    margin-bottom: 3.5rem;
+  }
 }
 
 @media print {

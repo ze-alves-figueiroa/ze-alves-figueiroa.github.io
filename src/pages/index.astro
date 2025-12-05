@@ -3,6 +3,7 @@ export const prerender = false;
 
 import Layout from "../layouts/Layout.astro";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
+import TableOfContents from "../components/TableOfContents.astro";
 import { profile } from "../config/profile";
 import { detectLanguage, getTranslations, supportedLanguages, type Language } from "../i18n/utils";
 
@@ -43,11 +44,6 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
 
 <Layout lang={lang}>
   <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
-    
-    <!-- Language Switcher -->
-    <div class="flex justify-end mb-8">
-      <LanguageSwitcher currentLang={lang} />
-    </div>
     
     <!-- Header -->
     <header class="mb-16">
@@ -91,14 +87,23 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
       </nav>
     </header>
 
+    <!-- Language Switcher -->
+    <LanguageSwitcher currentLang={lang} />
+
     <!-- About -->
     <section class="mb-14">
       <p class="text-[var(--color-text-secondary)] leading-relaxed">{t.about}</p>
     </section>
 
     <!-- Experience -->
-    <section class="mb-14">
-      <h2 class="section-title">{t.sections.experience}</h2>
+    <section id="experience" class="mb-14 details-section">
+      <details open class="group">
+        <summary class="cursor-pointer list-none">
+          <h2 class="section-title inline">{t.sections.experience}</h2>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs collapse-icon">▼</span>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
+        </summary>
+        <div class="mt-4">
       
       <div class="space-y-10">
         {profile.experience.map((job, idx) => {
@@ -129,8 +134,14 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
     </section>
 
     <!-- Projects -->
-    <section class="mb-14">
-      <h2 class="section-title">{t.sections.projects}</h2>
+    <section id="projects" class="mb-14 details-section">
+      <details open class="group">
+        <summary class="cursor-pointer list-none">
+          <h2 class="section-title inline">{t.sections.projects}</h2>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs collapse-icon">▼</span>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
+        </summary>
+        <div class="mt-4">
       
       {profile.projects.map((project) => {
         const projT = t.projects.cargosight;
@@ -155,11 +166,19 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
           </article>
         );
       })}
+        </div>
+      </details>
     </section>
 
     <!-- Education -->
-    <section class="mb-14">
-      <h2 class="section-title">{t.sections.education}</h2>
+    <section id="education" class="mb-14 details-section">
+      <details open class="group">
+        <summary class="cursor-pointer list-none">
+          <h2 class="section-title inline">{t.sections.education}</h2>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs collapse-icon">▼</span>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
+        </summary>
+        <div class="mt-4">
       
       <div class="space-y-6">
         {profile.education.map((edu, idx) => {
@@ -185,26 +204,64 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
           );
         })}
       </div>
+        </div>
+      </details>
     </section>
 
     <!-- Skills -->
-    <section class="mb-14">
-      <h2 class="section-title">{t.sections.skills}</h2>
-      <p class="text-sm text-[var(--color-text-secondary)]">
-        {profile.skills.join(" · ")}
-      </p>
+    <section id="skills" class="mb-14 details-section">
+      <details open class="group">
+        <summary class="cursor-pointer list-none">
+          <h2 class="section-title inline">{t.sections.skills}</h2>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs collapse-icon">▼</span>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
+        </summary>
+        <div class="mt-4">
+          <p class="text-sm text-[var(--color-text-secondary)]">
+            {profile.skills.join(" · ")}
+          </p>
+        </div>
+      </details>
     </section>
 
     <!-- Languages -->
-    <section class="mb-14">
-      <h2 class="section-title">{t.sections.languages}</h2>
-      <p class="text-sm text-[var(--color-text-secondary)]">
-        {profile.languages.map((l) => {
-          const translatedName = t.languageNames[l.name as keyof typeof t.languageNames] || l.name;
-          const translatedLevel = t.languageLevels[l.level as keyof typeof t.languageLevels] || l.level;
-          return `${translatedName} (${translatedLevel})`;
-        }).join(" · ")}
-      </p>
+    <section id="languages" class="mb-14 details-section">
+      <details open class="group">
+        <summary class="cursor-pointer list-none">
+          <h2 class="section-title inline">{t.sections.languages}</h2>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs collapse-icon">▼</span>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
+        </summary>
+        <div class="mt-4">
+          <p class="text-sm text-[var(--color-text-secondary)]">
+            {profile.languages.map((l) => {
+              const translatedName = t.languageNames[l.name as keyof typeof t.languageNames] || l.name;
+              const translatedLevel = t.languageLevels[l.level as keyof typeof t.languageLevels] || l.level;
+              return `${translatedName} (${translatedLevel})`;
+            }).join(" · ")}
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <!-- Interests -->
+    <section id="interests" class="mb-14 details-section">
+      <details open class="group">
+        <summary class="cursor-pointer list-none">
+          <h2 class="section-title inline">{t.sections.interests}</h2>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs collapse-icon">▼</span>
+          <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
+        </summary>
+        <div class="mt-4">
+          <ul class="space-y-1.5 text-sm text-[var(--color-text-secondary)]">
+            {t.interests.items.map((item) => (
+              <li class="pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-[var(--color-text-muted)]">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </section>
 
     <!-- Footer -->

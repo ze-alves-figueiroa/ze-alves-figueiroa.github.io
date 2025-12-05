@@ -8,6 +8,7 @@ export const translations = {
       education: "Education",
       skills: "Skills",
       languages: "Languages",
+      interests: "Interests",
     },
     location: "Recife, Brazil",
     months: {
@@ -105,6 +106,16 @@ export const translations = {
         ],
       },
     },
+    interests: {
+      title: "Personal Interests",
+      items: [
+        "Languages and linguistics",
+        "Theology (Reformed Christian)",
+        "Jiu Jitsu (Blue Belt), Boxing and Judo",
+        "Favorite game: Dark Souls",
+        "Culinary arts",
+      ],
+    },
   },
   pt: {
     title: "Engenheiro de Software Sênior",
@@ -115,6 +126,7 @@ export const translations = {
       education: "Formação",
       skills: "Habilidades",
       languages: "Idiomas",
+      interests: "Interesses",
     },
     location: "Recife, Brasil",
     months: {
@@ -212,6 +224,16 @@ export const translations = {
         ],
       },
     },
+    interests: {
+      title: "Interesses Pessoais",
+      items: [
+        "Idiomas e linguística",
+        "Teologia (Cristão Reformado)",
+        "Jiu Jitsu (Faixa Azul), Boxe e Judô",
+        "Jogo favorito: Dark Souls",
+        "Culinária",
+      ],
+    },
   },
   fr: {
     title: "Ingénieur Logiciel Senior",
@@ -222,6 +244,7 @@ export const translations = {
       education: "Formation",
       skills: "Compétences",
       languages: "Langues",
+      interests: "Centres d'intérêt",
     },
     location: "Recife, Brésil",
     months: {
@@ -318,6 +341,16 @@ export const translations = {
           "Recherche scientifique dans le domaine de la Logique",
         ],
       },
+    },
+    interests: {
+      title: "Centres d'intérêt personnels",
+      items: [
+        "Langues et linguistique",
+        "Théologie (Chrétien réformé)",
+        "Jiu Jitsu (Ceinture bleue), Boxe et Judo",
+        "Jeu favori : Dark Souls",
+        "Cuisine",
+      ],
     },
   },
 } as const;
