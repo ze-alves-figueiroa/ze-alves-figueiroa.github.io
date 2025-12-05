@@ -24,52 +24,66 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
 ---
 
 <Layout lang={lang}>
-  <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
-    
-    <!-- Header -->
-    <header class="mb-16">
-      <div class="flex items-start gap-6 mb-6">
+  <!-- Sticky Header with Profile, Search, and Links -->
+  <header class="sticky top-0 z-50 bg-[var(--color-bg)] border-b border-[var(--color-border)] backdrop-blur-sm bg-opacity-90">
+    <div class="max-w-2xl mx-auto px-6 py-4">
+      <div class="flex items-start gap-4 mb-4">
         <img 
           src={profile.photo}
           alt={profile.name}
-          class="w-20 h-20 rounded-full object-cover"
+          class="w-12 h-12 rounded-full object-cover flex-shrink-0"
         />
-        <div>
-          <h1 class="text-2xl font-semibold tracking-tight mb-1">{profile.name}</h1>
-          <p class="text-[var(--color-text-muted)]" data-i18n="title">{t.title}</p>
+        <div class="flex-1 min-w-0">
+          <h1 class="text-lg font-semibold tracking-tight mb-0.5 truncate">{profile.name}</h1>
+          <p class="text-sm text-[var(--color-text-muted)]" data-i18n="title">{t.title}</p>
         </div>
+        <LanguageSwitcher currentLang={lang} />
       </div>
       
-      <nav class="flex flex-wrap gap-x-5 gap-y-3 text-sm text-[var(--color-text-secondary)]">
+      <div class="flex items-center gap-4 mb-3">
+        <input
+          type="text"
+          id="skills-search"
+          data-i18n="skillsSearch"
+          placeholder={t.skillsSearch}
+          class="flex-1 px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border)] focus:border-[var(--color-border)]"
+        />
+      </div>
+      
+      <nav class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-[var(--color-text-secondary)]">
         <a href={`mailto:${profile.contact.email}`} class="link inline-flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
           </svg>
-          {profile.contact.email}
+          <span class="hidden sm:inline">{profile.contact.email}</span>
+          <span class="sm:hidden">Email</span>
         </a>
         <a href={profile.contact.whatsapp} target="_blank" rel="noopener" class="link inline-flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
           </svg>
           WhatsApp
         </a>
         <a href={profile.social.linkedin} target="_blank" rel="noopener" class="link inline-flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
           LinkedIn
         </a>
         <a href={profile.social.github} target="_blank" rel="noopener" class="link inline-flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
           </svg>
           GitHub
         </a>
+        <a href={lang === "pt" ? "/cvs/Jose_Figueiroa_CV.pdf" : lang === "fr" ? "/cvs/Jose_Figueiroa_CV__FR_.pdf" : "/cvs/Jose_Figueiroa_CV__EN_.pdf"} target="_blank" rel="noopener" class="link inline-flex items-center gap-1.5" data-i18n="cvDownload">
+          <span data-i18n="cvDownload">{t.cvDownload}</span>
+        </a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <!-- Language Switcher -->
-    <LanguageSwitcher currentLang={lang} />
+  <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
 
     <!-- About -->
     <section class="mb-14">
@@ -200,14 +214,6 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
           <span class="ml-2 text-[var(--color-text-muted)] text-xs expand-icon">▶</span>
         </summary>
         <div class="mt-4">
-          <div class="mb-4">
-            <input
-              type="text"
-              id="skills-search"
-              placeholder="Search skills..."
-              class="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border)] focus:border-[var(--color-border)]"
-            />
-          </div>
           <div id="skills-container" class="flex flex-wrap gap-2">
             {profile.skills.map((skill) => {
               const skillName = typeof skill === "string" ? skill : skill.name;
@@ -225,6 +231,9 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
                 </span>
               );
             })}
+          </div>
+          <div id="skills-no-results" class="hidden mt-4 p-3 text-sm text-[var(--color-text-secondary)] bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-md" data-i18n="skillsSearchNoResults">
+            {t.skillsSearchNoResults}
           </div>
         </div>
       </details>
@@ -283,9 +292,9 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
 <script is:inline>
   // Embed translations
   const translations = {
-    en: { title: "Senior Software Engineer", about: "Senior software engineer with solid experience in backend development and strong fullstack capability — including cloud infrastructure and frontend interfaces. Fast learner with excellent technical skills.", sections: { experience: "Experience", projects: "Projects", education: "Education", skills: "Skills", languages: "Languages", interests: "Interests" }, location: "Recife, Brazil", months: { Jan: "Jan", Feb: "Feb", Mar: "Mar", Apr: "Apr", May: "May", Jun: "Jun", Jul: "Jul", Aug: "Aug", Sep: "Sep", Oct: "Oct", Nov: "Nov", Dec: "Dec" }, present: "Present", institutions: { "Federal University of Pernambuco": "Federal University of Pernambuco", "Polytech Côte D'Azur": "Polytech Côte D'Azur" }, languageNames: { Portuguese: "Portuguese", English: "English", French: "French" }, languageLevels: { Native: "Native", Advanced: "Advanced", Fluent: "Fluent" }, experience: { jusfy: { role: "Senior Software Engineer", highlights: ["Platform squad handling thousands of MAU and DAUs", "Building and scaling lawtech solutions for legal automation"] }, beyond: { role: "Backend Developer", highlights: ["Technical owner of legal automation platform, helping 10x growth in active clients", "Built and maintained legal automation flows with Node.js, Puppeteer and BullMQ, achieving 2,000+ daily runs", "Fixed critical failures increasing automation success rate by 10+ percentage points", "Modernized NodeJS codebase, tripling startup speed and improving developer experience", "Implemented observability features (metrics and alerts), reducing incident detection and resolution time"] }, navalport1: { role: "Fullstack Developer", highlights: ["Led development of mooring monitoring system, reducing maneuvering risks and equipment wear", "Built AIS-based vessel tracking system for real-time port operations and logistics", "Developed interactive dashboards with D3.js improving security team efficiency", "Introduced Swagger and AWS SAM, standardizing APIs and implementing Infrastructure as Code"] }, ausy: { role: "IoT Engineer", highlights: ["Consultant at Orange working on Test as a Service platform for SmartTV end-to-end testing", "Proposed architectures, data models and network configurations for existing infrastructure", "Fullstack development with AWS, Angular, Java and Node.js"] }, navalport2: { role: "Fullstack Developer", highlights: ["Developed and deployed software and physical systems for port security and intelligence", "Built vessel arrival detection using AIS, mooring monitoring, and maneuver planning features"] }, navalport3: { role: "Fullstack Developer", type: "Internship", highlights: ["Backend and frontend development for port management systems"] } }, projects: { cargosight: { description: "B2B SaaS using computer vision to monitor industrial areas and detect operational risks in real time — missing PPE, hazardous zones, suspended load movement.", highlights: ["Won 2nd place in University of Pernambuco's innovation program", "Validated PoC at Gerdau's steel plant, later sold to two ports", "Integrated IP cameras, CNNs, and IoT layers for automated alerts"] } }, education: { master: { degree: "Master's in Computer Engineering", highlights: ["Exchange Program", "Research on Simulation and Testing for Autonomous Vehicles with Inria"] }, bachelor: { degree: "Bachelor's in Computer Engineering", highlights: ["Teaching Assistant in Logic and Computation Theory", "Scientific Research in Logic"] } }, interests: { title: "Personal Interests", items: ["Languages and linguistics", "Theology (Reformed Christian)", "Jiu Jitsu (Blue Belt), Boxing and Judo", "Favorite game: Dark Souls", "Culinary arts"] } },
-    pt: { title: "Engenheiro de Software Sênior", about: "Engenheiro de software sênior com forte experiência em backend e atuação fullstack — incluindo infraestrutura em nuvem e desenvolvimento frontend. Aprendiz rápido, com capacidade técnica sólida e foco em resolver problemas reais.", sections: { experience: "Experiência", projects: "Projetos", education: "Formação", skills: "Habilidades", languages: "Idiomas", interests: "Interesses" }, location: "Recife, Brasil", months: { Jan: "Jan", Feb: "Fev", Mar: "Mar", Apr: "Abr", May: "Mai", Jun: "Jun", Jul: "Jul", Aug: "Ago", Sep: "Set", Oct: "Out", Nov: "Nov", Dec: "Dez" }, present: "Atual", institutions: { "Federal University of Pernambuco": "Universidade Federal de Pernambuco", "Polytech Côte D'Azur": "Polytech Côte D'Azur" }, languageNames: { Portuguese: "Português", English: "Inglês", French: "Francês" }, languageLevels: { Native: "Nativo", Advanced: "Avançado", Fluent: "Fluente" }, experience: { jusfy: { role: "Engenheiro de Software Sênior", highlights: ["Atuação na squad de plataforma com milhares de MAUs e DAUs", "Construção e evolução de soluções lawtech voltadas para automação jurídica em escala"] }, beyond: { role: "Desenvolvedor Backend", highlights: ["Responsável técnico da plataforma de automação jurídica, contribuindo para um crescimento de 10x no número de clientes ativos", "Desenvolvi e mantive fluxos de automação com Node.js, Puppeteer e BullMQ, alcançando mais de 2.000 execuções diárias", "Corrigi falhas críticas que aumentaram a taxa de sucesso das automações em mais de 10 pontos percentuais", "Modernizei a base Node.js, triplicando o tempo de inicialização e melhorando significativamente a experiência dos desenvolvedores", "Implementei métricas, logs e alertas, reduzindo o tempo de detecção e resolução de incidentes"] }, navalport1: { role: "Desenvolvedor Fullstack", highlights: ["Liderei o desenvolvimento do sistema de monitoramento de atracação, reduzindo riscos operacionais e desgaste de equipamentos", "Criei um sistema de rastreamento de embarcações baseado em AIS, otimizando operações portuárias e previsibilidade logística", "Desenvolvi dashboards interativos com D3.js, aumentando a eficiência da equipe de segurança", "Introduzi Swagger e AWS SAM, padronizando APIs e estabelecendo Infrastructure as Code"] }, ausy: { role: "Engenheiro de IoT", highlights: ["Consultor na Orange trabalhando em uma plataforma de Test as a Service para testes end-to-end de apps SmartTV", "Propus arquiteturas, modelos de dados e configurações de rede alinhadas à infraestrutura existente", "Atuação fullstack com AWS, Angular, Java e Node.js"] }, navalport2: { role: "Desenvolvedor Fullstack", highlights: ["Desenvolvimento e implantação de sistemas de software e hardware para segurança e inteligência portuária", "Funcionalidades incluíam detecção de chegada de navios via AIS, monitoramento de atracação e suporte ao planejamento de manobras"] }, navalport3: { role: "Desenvolvedor Fullstack", type: "Estágio", highlights: ["Desenvolvimento backend e frontend para sistemas de gestão portuária"] } }, projects: { cargosight: { description: "SaaS B2B que utiliza visão computacional para monitoramento de áreas industriais e detecção de riscos operacionais em tempo real — como ausência de EPI, zonas perigosas e movimentação de carga suspensa.", highlights: ["2º lugar no programa de inovação da Universidade de Pernambuco", "PoC validada na usina da Gerdau e posteriormente comercializada para dois portos", "Integração de câmeras IP, CNNs e camada IoT para geração de alertas automáticos"] } }, education: { master: { degree: "Mestrado em Engenharia de Computação", highlights: ["Programa de intercâmbio", "Pesquisa em simulação e testes para veículos autônomos em parceria com o Inria"] }, bachelor: { degree: "Bacharelado em Engenharia de Computação", highlights: ["Monitoria em Lógica e Teoria da Computação", "Pesquisa científica na área de Lógica"] } }, interests: { title: "Interesses Pessoais", items: ["Idiomas e linguística", "Teologia (Cristão Reformado)", "Jiu Jitsu (Faixa Azul), Boxe e Judô", "Jogo favorito: Dark Souls", "Culinária"] } },
-    fr: { title: "Ingénieur Logiciel Senior", about: "Ingénieur logiciel senior avec une solide expérience en développement backend et une forte capacité fullstack — incluant l'infrastructure cloud et le développement frontend. Apprentissage rapide, grande maîtrise technique et forte orientation vers la résolution de problèmes concrets.", sections: { experience: "Expérience", projects: "Projets", education: "Formation", skills: "Compétences", languages: "Langues", interests: "Centres d'intérêt" }, location: "Recife, Brésil", months: { Jan: "Janv", Feb: "Févr", Mar: "Mars", Apr: "Avr", May: "Mai", Jun: "Juin", Jul: "Juil", Aug: "Août", Sep: "Sept", Oct: "Oct", Nov: "Nov", Dec: "Déc" }, present: "Présent", institutions: { "Federal University of Pernambuco": "Université Fédérale de Pernambuco", "Polytech Côte D'Azur": "Polytech Côte D'Azur" }, languageNames: { Portuguese: "Portugais", English: "Anglais", French: "Français" }, languageLevels: { Native: "Natif", Advanced: "Avancé", Fluent: "Courant" }, experience: { jusfy: { role: "Ingénieur Logiciel Senior", highlights: ["Membre de l'équipe plateforme, gérant des milliers d'utilisateurs actifs mensuels et quotidiens", "Développement et montée en charge de solutions lawtech orientées vers l'automatisation juridique"] }, beyond: { role: "Développeur Backend", highlights: ["Responsable technique de la plateforme d'automatisation juridique, contribuant à une croissance de 10x du nombre de clients actifs", "Conception et maintenance de flux d'automatisation avec Node.js, Puppeteer et BullMQ, atteignant plus de 2 000 exécutions par jour", "Correction de pannes critiques, augmentant le taux de réussite des automatisations de plus de 10 points", "Modernisation de la base Node.js, triplant la vitesse de démarrage et améliorant l'expérience développeur", "Mise en place de métriques et d'alertes, réduisant fortement le temps de détection et de résolution d'incidents"] }, navalport1: { role: "Développeur Fullstack", highlights: ["Piloté le développement d'un système de surveillance d'amarrage, réduisant les risques opérationnels et l'usure d'équipements essentiels", "Créé un système de suivi des navires basé sur l'AIS pour optimiser les opérations portuaires et la logistique", "Développé des tableaux de bord interactifs avec D3.js, améliorant l'efficacité de l'équipe de sécurité", "Introduit Swagger et AWS SAM, standardisant les API et établissant l'Infrastructure as Code"] }, ausy: { role: "Ingénieur IoT", highlights: ["Consultant chez Orange sur une plateforme de Test as a Service pour les tests end-to-end d'applications SmartTV", "Proposition d'architectures, de modèles de données et de configurations réseau adaptées à l'infrastructure existante", "Développement fullstack avec AWS, Angular, Java et Node.js"] }, navalport2: { role: "Développeur Fullstack", highlights: ["Développement et déploiement de systèmes logiciels et matériels pour la sécurité et l'intelligence portuaire", "Fonctionnalités incluant détection d'arrivée des navires via AIS, surveillance d'amarrage et planification des manœuvres"] }, navalport3: { role: "Développeur Fullstack", type: "Stage", highlights: ["Développement backend et frontend pour des systèmes de gestion portuaire"] } }, projects: { cargosight: { description: "SaaS B2B utilisant la vision par ordinateur pour surveiller des zones industrielles et détecter des risques opérationnels en temps réel — absence d'EPI, zones dangereuses, déplacement de charges suspendues.", highlights: ["2ᵉ place au programme d'innovation de l'Université de Pernambuco", "PoC validée dans une usine de Gerdau, puis vendue à deux ports", "Intégration de caméras IP, de réseaux neuronaux (CNN) et de couches IoT pour générer des alertes automatisées"] } }, education: { master: { degree: "Master en Génie Informatique", highlights: ["Programme d'échange international", "Recherche sur la simulation et les tests pour véhicules autonomes en partenariat avec l'Inria"] }, bachelor: { degree: "Licence en Génie Informatique", highlights: ["Assistant d'enseignement en Logique et Théorie de la Computation", "Recherche scientifique dans le domaine de la Logique"] } }, interests: { title: "Centres d'intérêt personnels", items: ["Langues et linguistique", "Théologie (Chrétien réformé)", "Jiu Jitsu (Ceinture bleue), Boxe et Judo", "Jeu favori : Dark Souls", "Cuisine"] } }
+    en: { title: "Senior Software Engineer", about: "Senior software engineer with solid experience in backend development and strong fullstack capability — including cloud infrastructure and frontend interfaces. Fast learner with excellent technical skills.", sections: { experience: "Experience", projects: "Projects", education: "Education", skills: "Skills", languages: "Languages", interests: "Interests" }, skillsSearch: "Hey HR, want to check if I know a specific tech? Search here.", skillsSearchNoResults: "Didn't find the tech you were looking for? Check my LinkedIn, my résumé, or send me a message — I may have forgotten to list it here.", cvDownload: "Resume", location: "Recife, Brazil", months: { Jan: "Jan", Feb: "Feb", Mar: "Mar", Apr: "Apr", May: "May", Jun: "Jun", Jul: "Jul", Aug: "Aug", Sep: "Sep", Oct: "Oct", Nov: "Nov", Dec: "Dec" }, present: "Present", institutions: { "Federal University of Pernambuco": "Federal University of Pernambuco", "Polytech Côte D'Azur": "Polytech Côte D'Azur" }, languageNames: { Portuguese: "Portuguese", English: "English", French: "French" }, languageLevels: { Native: "Native", Advanced: "Advanced", Fluent: "Fluent" }, experience: { jusfy: { role: "Senior Software Engineer", highlights: ["Platform squad handling thousands of MAU and DAUs", "Building and scaling lawtech solutions for legal automation"] }, beyond: { role: "Backend Developer", highlights: ["Technical owner of legal automation platform, helping 10x growth in active clients", "Built and maintained legal automation flows with Node.js, Puppeteer and BullMQ, achieving 2,000+ daily runs", "Fixed critical failures increasing automation success rate by 10+ percentage points", "Modernized NodeJS codebase, tripling startup speed and improving developer experience", "Implemented observability features (metrics and alerts), reducing incident detection and resolution time"] }, navalport1: { role: "Fullstack Developer", highlights: ["Led development of mooring monitoring system, reducing maneuvering risks and equipment wear", "Built AIS-based vessel tracking system for real-time port operations and logistics", "Developed interactive dashboards with D3.js improving security team efficiency", "Introduced Swagger and AWS SAM, standardizing APIs and implementing Infrastructure as Code"] }, ausy: { role: "IoT Engineer", highlights: ["Consultant at Orange working on Test as a Service platform for SmartTV end-to-end testing", "Proposed architectures, data models and network configurations for existing infrastructure", "Fullstack development with AWS, Angular, Java and Node.js"] }, navalport2: { role: "Fullstack Developer", highlights: ["Developed and deployed software and physical systems for port security and intelligence", "Built vessel arrival detection using AIS, mooring monitoring, and maneuver planning features"] }, navalport3: { role: "Fullstack Developer", type: "Internship", highlights: ["Backend and frontend development for port management systems"] } }, projects: { cargosight: { description: "B2B SaaS using computer vision to monitor industrial areas and detect operational risks in real time — missing PPE, hazardous zones, suspended load movement.", highlights: ["Won 2nd place in University of Pernambuco's innovation program", "Validated PoC at Gerdau's steel plant, later sold to two ports", "Integrated IP cameras, CNNs, and IoT layers for automated alerts"] } }, education: { master: { degree: "Master's in Computer Engineering", highlights: ["Exchange Program", "Research on Simulation and Testing for Autonomous Vehicles with Inria"] }, bachelor: { degree: "Bachelor's in Computer Engineering", highlights: ["Teaching Assistant in Logic and Computation Theory", "Scientific Research in Logic"] } }, interests: { title: "Personal Interests", items: ["Languages and linguistics", "Theology (Reformed Christian)", "Jiu Jitsu (Blue Belt), Boxing and Judo", "Favorite game: Dark Souls", "Culinary arts"] } },
+    pt: { title: "Engenheiro de Software Sênior", about: "Engenheiro de software sênior com forte experiência em backend e atuação fullstack — incluindo infraestrutura em nuvem e desenvolvimento frontend. Aprendiz rápido, com capacidade técnica sólida e foco em resolver problemas reais.", sections: { experience: "Experiência", projects: "Projetos", education: "Formação", skills: "Habilidades", languages: "Idiomas", interests: "Interesses" }, skillsSearch: "Ei, RH. Quer saber se eu domino alguma tecnologia? Procure aqui.", skillsSearchNoResults: "Não achou a tecnologia que está procurando? Verifique meu LinkedIn, meu currículo ou me mande uma mensagem — posso ter deixado algo de fora aqui.", cvDownload: "Currículo", location: "Recife, Brasil", months: { Jan: "Jan", Feb: "Fev", Mar: "Mar", Apr: "Abr", May: "Mai", Jun: "Jun", Jul: "Jul", Aug: "Ago", Sep: "Set", Oct: "Out", Nov: "Nov", Dec: "Dez" }, present: "Atual", institutions: { "Federal University of Pernambuco": "Universidade Federal de Pernambuco", "Polytech Côte D'Azur": "Polytech Côte D'Azur" }, languageNames: { Portuguese: "Português", English: "Inglês", French: "Francês" }, languageLevels: { Native: "Nativo", Advanced: "Avançado", Fluent: "Fluente" }, experience: { jusfy: { role: "Engenheiro de Software Sênior", highlights: ["Atuação na squad de plataforma com milhares de MAUs e DAUs", "Construção e evolução de soluções lawtech voltadas para automação jurídica em escala"] }, beyond: { role: "Desenvolvedor Backend", highlights: ["Responsável técnico da plataforma de automação jurídica, contribuindo para um crescimento de 10x no número de clientes ativos", "Desenvolvi e mantive fluxos de automação com Node.js, Puppeteer e BullMQ, alcançando mais de 2.000 execuções diárias", "Corrigi falhas críticas que aumentaram a taxa de sucesso das automações em mais de 10 pontos percentuais", "Modernizei a base Node.js, triplicando o tempo de inicialização e melhorando significativamente a experiência dos desenvolvedores", "Implementei métricas, logs e alertas, reduzindo o tempo de detecção e resolução de incidentes"] }, navalport1: { role: "Desenvolvedor Fullstack", highlights: ["Liderei o desenvolvimento do sistema de monitoramento de atracação, reduzindo riscos operacionais e desgaste de equipamentos", "Criei um sistema de rastreamento de embarcações baseado em AIS, otimizando operações portuárias e previsibilidade logística", "Desenvolvi dashboards interativos com D3.js, aumentando a eficiência da equipe de segurança", "Introduzi Swagger e AWS SAM, padronizando APIs e estabelecendo Infrastructure as Code"] }, ausy: { role: "Engenheiro de IoT", highlights: ["Consultor na Orange trabalhando em uma plataforma de Test as a Service para testes end-to-end de apps SmartTV", "Propus arquiteturas, modelos de dados e configurações de rede alinhadas à infraestrutura existente", "Atuação fullstack com AWS, Angular, Java e Node.js"] }, navalport2: { role: "Desenvolvedor Fullstack", highlights: ["Desenvolvimento e implantação de sistemas de software e hardware para segurança e inteligência portuária", "Funcionalidades incluíam detecção de chegada de navios via AIS, monitoramento de atracação e suporte ao planejamento de manobras"] }, navalport3: { role: "Desenvolvedor Fullstack", type: "Estágio", highlights: ["Desenvolvimento backend e frontend para sistemas de gestão portuária"] } }, projects: { cargosight: { description: "SaaS B2B que utiliza visão computacional para monitoramento de áreas industriais e detecção de riscos operacionais em tempo real — como ausência de EPI, zonas perigosas e movimentação de carga suspensa.", highlights: ["2º lugar no programa de inovação da Universidade de Pernambuco", "PoC validada na usina da Gerdau e posteriormente comercializada para dois portos", "Integração de câmeras IP, CNNs e camada IoT para geração de alertas automáticos"] } }, education: { master: { degree: "Mestrado em Engenharia de Computação", highlights: ["Programa de intercâmbio", "Pesquisa em simulação e testes para veículos autônomos em parceria com o Inria"] }, bachelor: { degree: "Bacharelado em Engenharia de Computação", highlights: ["Monitoria em Lógica e Teoria da Computação", "Pesquisa científica na área de Lógica"] } }, interests: { title: "Interesses Pessoais", items: ["Idiomas e linguística", "Teologia (Cristão Reformado)", "Jiu Jitsu (Faixa Azul), Boxe e Judô", "Jogo favorito: Dark Souls", "Culinária"] } },
+    fr: { title: "Ingénieur Logiciel Senior", about: "Ingénieur logiciel senior avec une solide expérience en développement backend et une forte capacité fullstack — incluant l'infrastructure cloud et le développement frontend. Apprentissage rapide, grande maîtrise technique et forte orientation vers la résolution de problèmes concrets.", sections: { experience: "Expérience", projects: "Projets", education: "Formation", skills: "Compétences", languages: "Langues", interests: "Centres d'intérêt" }, skillsSearch: "Bonjour RH, vous souhaitez vérifier si je maîtrise une technologie ? Cherchez ici.", skillsSearchNoResults: "Vous n'avez pas trouvé la technologie que vous cherchiez ? Consultez mon LinkedIn, mon CV ou envoyez-moi un message — j'ai peut-être oublié de l'ajouter ici.", cvDownload: "Curriculum Vitæ", location: "Recife, Brésil", months: { Jan: "Janv", Feb: "Févr", Mar: "Mars", Apr: "Avr", May: "Mai", Jun: "Juin", Jul: "Juil", Aug: "Août", Sep: "Sept", Oct: "Oct", Nov: "Nov", Dec: "Déc" }, present: "Présent", institutions: { "Federal University of Pernambuco": "Université Fédérale de Pernambuco", "Polytech Côte D'Azur": "Polytech Côte D'Azur" }, languageNames: { Portuguese: "Portugais", English: "Anglais", French: "Français" }, languageLevels: { Native: "Natif", Advanced: "Avancé", Fluent: "Courant" }, experience: { jusfy: { role: "Ingénieur Logiciel Senior", highlights: ["Membre de l'équipe plateforme, gérant des milliers d'utilisateurs actifs mensuels et quotidiens", "Développement et montée en charge de solutions lawtech orientées vers l'automatisation juridique"] }, beyond: { role: "Développeur Backend", highlights: ["Responsable technique de la plateforme d'automatisation juridique, contribuant à une croissance de 10x du nombre de clients actifs", "Conception et maintenance de flux d'automatisation avec Node.js, Puppeteer et BullMQ, atteignant plus de 2 000 exécutions par jour", "Correction de pannes critiques, augmentant le taux de réussite des automatisations de plus de 10 points", "Modernisation de la base Node.js, triplant la vitesse de démarrage et améliorant l'expérience développeur", "Mise en place de métriques et d'alertes, réduisant fortement le temps de détection et de résolution d'incidents"] }, navalport1: { role: "Développeur Fullstack", highlights: ["Piloté le développement d'un système de surveillance d'amarrage, réduisant les risques opérationnels et l'usure d'équipements essentiels", "Créé un système de suivi des navires basé sur l'AIS pour optimiser les opérations portuaires et la logistique", "Développé des tableaux de bord interactifs avec D3.js, améliorant l'efficacité de l'équipe de sécurité", "Introduit Swagger et AWS SAM, standardisant les API et établissant l'Infrastructure as Code"] }, ausy: { role: "Ingénieur IoT", highlights: ["Consultant chez Orange sur une plateforme de Test as a Service pour les tests end-to-end d'applications SmartTV", "Proposition d'architectures, de modèles de données et de configurations réseau adaptées à l'infrastructure existante", "Développement fullstack avec AWS, Angular, Java et Node.js"] }, navalport2: { role: "Développeur Fullstack", highlights: ["Développement et déploiement de systèmes logiciels et matériels pour la sécurité et l'intelligence portuaire", "Fonctionnalités incluant détection d'arrivée des navires via AIS, surveillance d'amarrage et planification des manœuvres"] }, navalport3: { role: "Développeur Fullstack", type: "Stage", highlights: ["Développement backend et frontend pour des systèmes de gestion portuaire"] } }, projects: { cargosight: { description: "SaaS B2B utilisant la vision par ordinateur pour surveiller des zones industrielles et détecter des risques opérationnels en temps réel — absence d'EPI, zones dangereuses, déplacement de charges suspendues.", highlights: ["2ᵉ place au programme d'innovation de l'Université de Pernambuco", "PoC validée dans une usine de Gerdau, puis vendue à deux ports", "Intégration de caméras IP, de réseaux neuronaux (CNN) et de couches IoT pour générer des alertes automatisées"] } }, education: { master: { degree: "Master en Génie Informatique", highlights: ["Programme d'échange international", "Recherche sur la simulation et les tests pour véhicules autonomes en partenariat avec l'Inria"] }, bachelor: { degree: "Licence en Génie Informatique", highlights: ["Assistant d'enseignement en Logique et Théorie de la Computation", "Recherche scientifique dans le domaine de la Logique"] } }, interests: { title: "Centres d'intérêt personnels", items: ["Langues et linguistique", "Théologie (Chrétien réformé)", "Jiu Jitsu (Ceinture bleue), Boxe et Judo", "Jeu favori : Dark Souls", "Cuisine"] } }
   };
   
   function detectLanguage() {
@@ -318,11 +327,26 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
         value = value?.[k];
       }
       if (value !== undefined) {
-        el.textContent = value;
+        if (el.tagName === "INPUT" && el.type === "text") {
+          el.placeholder = value;
+        } else {
+          el.textContent = value;
+        }
       }
     });
     
     document.documentElement.lang = lang;
+    
+    // Update CV link based on language
+    const cvLink = document.querySelector('a[data-i18n="cvDownload"]');
+    if (cvLink) {
+      const cvUrls = {
+        pt: "/cvs/Jose_Figueiroa_CV.pdf",
+        en: "/cvs/Jose_Figueiroa_CV__EN_.pdf",
+        fr: "/cvs/Jose_Figueiroa_CV__FR_.pdf"
+      };
+      cvLink.setAttribute("href", cvUrls[lang] || cvUrls.en);
+    }
     
     // Update language switcher active state
     const switcher = document.getElementById("language-switcher");
@@ -383,11 +407,15 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
   // Skills search functionality
   const skillsSearchInput = document.getElementById("skills-search");
   const skillsContainer = document.getElementById("skills-container");
+  const skillsSection = document.getElementById("skills");
+  const skillsNoResults = document.getElementById("skills-no-results");
   
   if (skillsSearchInput && skillsContainer) {
+    let scrollTimeout;
     skillsSearchInput.addEventListener("input", (e) => {
       const query = e.target.value.toLowerCase().trim();
       const skillBadges = skillsContainer.querySelectorAll(".skill-badge");
+      let hasVisibleSkills = false;
       
       skillBadges.forEach((badge) => {
         const skillName = badge.getAttribute("data-skill-name") || "";
@@ -395,7 +423,25 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
         const searchText = `${skillName} ${keywords}`;
         const shouldShow = query === "" || searchText.includes(query);
         badge.style.display = shouldShow ? "" : "none";
+        if (shouldShow) hasVisibleSkills = true;
       });
+      
+      // Show/hide disclaimer based on search filter being applied
+      if (skillsNoResults) {
+        if (query.length > 0) {
+          skillsNoResults.classList.remove("hidden");
+        } else {
+          skillsNoResults.classList.add("hidden");
+        }
+      }
+      
+      // Scroll to skills section when user starts typing and there are visible skills
+      if (query.length > 0 && hasVisibleSkills && skillsSection) {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          skillsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 300);
+      }
     });
   }
 </script>
