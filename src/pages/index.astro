@@ -76,7 +76,7 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
           </svg>
           GitHub
         </a>
-        <a href={lang === "pt" ? "/cvs/Jose_Figueiroa_CV.pdf" : lang === "fr" ? "/cvs/Jose_Figueiroa_CV__FR_.pdf" : "/cvs/Jose_Figueiroa_CV__EN_.pdf"} target="_blank" rel="noopener" class="link inline-flex items-center gap-1.5" data-i18n="cvDownload">
+        <a href={lang === "pt" ? "/cvs/Jose_Figueiroa_CV.pdf" : lang === "fr" ? "/cvs/Jose_Figueiroa_CV__FR_.pdf" : "/cvs/Jose_Figueiroa_CV__EN_.pdf"} target="_blank" rel="noopener" class="link inline-flex items-center gap-1.5">
           <span data-i18n="cvDownload">{t.cvDownload}</span>
         </a>
       </nav>
@@ -338,7 +338,8 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
     document.documentElement.lang = lang;
     
     // Update CV link based on language
-    const cvLink = document.querySelector('a[data-i18n="cvDownload"]');
+    const cvSpan = document.querySelector('span[data-i18n="cvDownload"]');
+    const cvLink = cvSpan?.closest('a');
     if (cvLink) {
       const cvUrls = {
         pt: "/cvs/Jose_Figueiroa_CV.pdf",
@@ -427,8 +428,9 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
       });
       
       // Show/hide disclaimer based on search filter being applied
+      // Only show when query is active AND no skills match
       if (skillsNoResults) {
-        if (query.length > 0) {
+        if (query.length > 0 && !hasVisibleSkills) {
           skillsNoResults.classList.remove("hidden");
         } else {
           skillsNoResults.classList.add("hidden");
