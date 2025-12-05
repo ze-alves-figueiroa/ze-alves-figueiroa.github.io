@@ -300,12 +300,50 @@ function translatePeriod(period: string, months: typeof t.months, present: strin
     });
     
     document.documentElement.lang = lang;
+    
+    // Update language switcher active state
+    const switcher = document.getElementById("language-switcher");
+    if (switcher) {
+      switcher.setAttribute("data-current-lang", lang);
+      const flags = { en: "🇺🇸", pt: "🇧🇷", fr: "🇫🇷" };
+      
+      switcher.querySelectorAll(".lang-item").forEach((item) => {
+        const itemLang = item.getAttribute("data-lang");
+        const isActive = itemLang === lang;
+        
+        if (isActive) {
+          // Convert to active span
+          if (item.tagName === "A") {
+            const span = document.createElement("span");
+            span.setAttribute("data-lang", itemLang);
+            span.className = "lang-item active inline-flex items-center gap-1 px-2 py-0.5 text-[var(--color-text-secondary)] font-medium border-b border-[var(--color-text-secondary)]";
+            span.setAttribute("aria-current", "page");
+            span.innerHTML = `<span class="text-sm">${flags[itemLang]}</span><span class="uppercase tracking-wider">${itemLang}</span>`;
+            item.replaceWith(span);
+          } else {
+            item.className = "lang-item active inline-flex items-center gap-1 px-2 py-0.5 text-[var(--color-text-secondary)] font-medium border-b border-[var(--color-text-secondary)]";
+            item.setAttribute("aria-current", "page");
+          }
+        } else {
+          // Convert to inactive link
+          if (item.tagName === "SPAN") {
+            const link = document.createElement("a");
+            link.setAttribute("data-lang", itemLang);
+            link.href = `?lang=${itemLang}`;
+            link.className = "lang-item inline-flex items-center gap-1 px-2 py-0.5 transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:border-b hover:border-[var(--color-border-subtle)]";
+            link.innerHTML = `<span class="text-sm">${flags[itemLang]}</span><span class="uppercase tracking-wider">${itemLang}</span>`;
+            item.replaceWith(link);
+          } else {
+            item.className = "lang-item inline-flex items-center gap-1 px-2 py-0.5 transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:border-b hover:border-[var(--color-border-subtle)]";
+            item.removeAttribute("aria-current");
+          }
+        }
+      });
+    }
   }
   
   const currentLang = detectLanguage();
-  if (currentLang !== "en") {
-    updatePage(currentLang);
-  }
+  updatePage(currentLang);
   
   document.querySelectorAll('a[href^="?lang="]').forEach((link) => {
     link.addEventListener("click", (e) => {

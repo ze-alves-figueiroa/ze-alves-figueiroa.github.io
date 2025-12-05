@@ -14,14 +14,15 @@ const flags: Record<Language, string> = {
 };
 ---
 
-<div class="flex items-center gap-1 text-xs border-t border-[var(--color-border)] pt-4 mt-4">
+<div id="language-switcher" class="flex items-center gap-1 text-xs border-t border-[var(--color-border)] pt-4 mt-4" data-current-lang={currentLang}>
   <span class="text-[var(--color-text-muted)] mr-2 font-mono text-[0.65rem] uppercase tracking-wider">Lang:</span>
   {supportedLanguages.map((lang) => {
     const isActive = lang === currentLang;
     
     return isActive ? (
       <span
-        class="inline-flex items-center gap-1 px-2 py-0.5 text-[var(--color-text-secondary)] font-medium border-b border-[var(--color-text-secondary)]"
+        data-lang={lang}
+        class="lang-item active inline-flex items-center gap-1 px-2 py-0.5 text-[var(--color-text-secondary)] font-medium border-b border-[var(--color-text-secondary)]"
         aria-current="page"
       >
         <span class="text-sm">{flags[lang]}</span>
@@ -29,8 +30,9 @@ const flags: Record<Language, string> = {
       </span>
     ) : (
       <a
+        data-lang={lang}
         href={`?lang=${lang}`}
-        class="inline-flex items-center gap-1 px-2 py-0.5 transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:border-b hover:border-[var(--color-border-subtle)]"
+        class="lang-item inline-flex items-center gap-1 px-2 py-0.5 transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:border-b hover:border-[var(--color-border-subtle)]"
       >
         <span class="text-sm">{flags[lang]}</span>
         <span class="uppercase tracking-wider">{lang}</span>
