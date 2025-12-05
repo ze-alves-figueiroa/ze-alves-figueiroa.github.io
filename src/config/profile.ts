@@ -318,7 +318,7 @@ export const profile = {
         "Developed interactive dashboards with D3.js improving security team efficiency",
         "Introduced Swagger and AWS SAM, standardizing APIs and implementing Infrastructure as Code",
       ],
-      technologies: ["Node.js", "NestJS", "Angular", "PostgreSQL", "RabbitMQ", "Docker", "AWS"],
+      technologies: ["Node.js", "NestJS", "Angular", "PostgreSQL", "RabbitMQ", "Docker", "AWS", "Terraform"],
     },
     {
       role: "IoT Engineer",
