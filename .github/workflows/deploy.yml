@@ -36,7 +36,7 @@ jobs:
         run: pnpm install
       
       - name: Build
-        run: BASE_URL=/${{ github.event.repository.name }} pnpm build
+        run: pnpm build
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
