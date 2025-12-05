@@ -14,7 +14,7 @@ const flags: Record<Language, string> = {
 };
 ---
 
-<div id="language-switcher" class="flex items-center gap-1 text-xs border-t border-[var(--color-border)] pt-4 mt-4" data-current-lang={currentLang}>
+<div id="language-switcher" class="flex items-center gap-1 text-xs border-t border-[var(--color-border)] pt-4 mt-4 relative z-10" data-current-lang={currentLang}>
   <span class="text-[var(--color-text-muted)] mr-2 font-mono text-[0.65rem] uppercase tracking-wider">Lang:</span>
   {supportedLanguages.map((lang) => {
     const isActive = lang === currentLang;
