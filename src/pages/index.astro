@@ -62,7 +62,7 @@ import { profile } from "../config/profile";
           <article>
             <div class="flex flex-wrap items-baseline justify-between gap-x-4 mb-2">
               <h3 class="font-medium">
-                {job.role} · <a href={job.url} target="_blank" rel="noopener" class="link">{job.company}</a>
+                {job.role}{job.type && ` (${job.type})`} · <a href={job.url} target="_blank" rel="noopener" class="link">{job.company}</a>
               </h3>
               <span class="text-sm text-[var(--color-text-muted)]">{job.period}</span>
             </div>
@@ -150,7 +150,7 @@ import { profile } from "../config/profile";
     <!-- Footer -->
     <footer class="pt-8 border-t border-[var(--color-border)]">
       <p class="text-xs text-[var(--color-text-muted)] text-center tracking-wide">
-        Nice, France
+        Recife, Brazil
       </p>
     </footer>
     
