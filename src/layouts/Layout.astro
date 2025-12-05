@@ -1,28 +1,34 @@
 ---
 import "../styles/global.css";
 import { profile } from "../config/profile";
+import { getTranslations, type Language } from "../i18n/utils";
 
 interface Props {
   title?: string;
   description?: string;
+  lang: Language;
 }
 
 const { 
   title = `${profile.name}`,
-  description = profile.about,
+  description,
+  lang,
 } = Astro.props;
+
+const t = getTranslations(lang);
+const finalDescription = description || t.about;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
+    <meta name="description" content={finalDescription} />
     <meta name="author" content={profile.name} />
     
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={finalDescription} />
     <meta property="og:type" content="website" />
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

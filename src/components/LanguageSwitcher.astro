@@ -1,0 +1,43 @@
+---
+import { supportedLanguages, type Language } from "../i18n/utils";
+
+interface Props {
+  currentLang: Language;
+}
+
+const { currentLang } = Astro.props;
+
+const flags: Record<Language, string> = {
+  en: "🇺🇸",
+  pt: "🇧🇷",
+  fr: "🇫🇷",
+};
+---
+
+<div class="flex items-center gap-3 text-xs">
+  {supportedLanguages.map((lang) => {
+    const isActive = lang === currentLang;
+    const content = (
+      <>
+        <span class="text-base">{flags[lang]}</span>
+        <span class="uppercase tracking-wider">{lang}</span>
+      </>
+    );
+    
+    return isActive ? (
+      <span
+        class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-[var(--color-text-secondary)] font-medium"
+        aria-current="page"
+      >
+        {content}
+      </span>
+    ) : (
+      <a
+        href={`?lang=${lang}`}
+        class="inline-flex items-center gap-1.5 px-2 py-1 rounded transition-colors text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+      >
+        {content}
+      </a>
+    );
+  })}
+</div>

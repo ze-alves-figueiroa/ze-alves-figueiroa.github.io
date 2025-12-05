@@ -1,10 +1,53 @@
 ---
+export const prerender = false;
+
 import Layout from "../layouts/Layout.astro";
+import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 import { profile } from "../config/profile";
+import { detectLanguage, getTranslations, supportedLanguages, type Language } from "../i18n/utils";
+
+const queryLang = Astro.url.searchParams.get("lang");
+const cookieLang = Astro.cookies.get("lang")?.value || null;
+
+// If query param is set, set cookie and redirect to clean URL
+if (queryLang && supportedLanguages.includes(queryLang as Language)) {
+  Astro.cookies.set("lang", queryLang, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    sameSite: "lax",
+    httpOnly: false, // Allow client-side access
+  });
+  return Astro.redirect(Astro.url.pathname);
+}
+
+// Use cookie if available, otherwise detect from browser
+const lang: Language = cookieLang && supportedLanguages.includes(cookieLang as Language)
+  ? cookieLang as Language
+  : detectLanguage(
+      Astro.request.headers.get("accept-language"),
+      null,
+      null
+    );
+
+const t = getTranslations(lang);
+
+// Helper to translate months and "Present" in period strings
+function translatePeriod(period: string, months: typeof t.months, present: string): string {
+  let translated = period.replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g, (match) => {
+    return months[match as keyof typeof months] || match;
+  });
+  translated = translated.replace(/\bPresent\b/g, present);
+  return translated;
+}
 ---
 
-<Layout>
+<Layout lang={lang}>
   <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
+    
+    <!-- Language Switcher -->
+    <div class="flex justify-end mb-8">
+      <LanguageSwitcher currentLang={lang} />
+    </div>
     
     <!-- Header -->
     <header class="mb-16">
@@ -16,7 +59,7 @@ import { profile } from "../config/profile";
         />
         <div>
           <h1 class="text-2xl font-semibold tracking-tight mb-1">{profile.name}</h1>
-          <p class="text-[var(--color-text-muted)]">{profile.title}</p>
+          <p class="text-[var(--color-text-muted)]">{t.title}</p>
         </div>
       </div>
       
@@ -50,90 +93,103 @@ import { profile } from "../config/profile";
 
     <!-- About -->
     <section class="mb-14">
-      <p class="text-[var(--color-text-secondary)] leading-relaxed">{profile.about}</p>
+      <p class="text-[var(--color-text-secondary)] leading-relaxed">{t.about}</p>
     </section>
 
     <!-- Experience -->
     <section class="mb-14">
-      <h2 class="section-title">Experience</h2>
+      <h2 class="section-title">{t.sections.experience}</h2>
       
       <div class="space-y-10">
-        {profile.experience.map((job) => (
-          <article>
-            <div class="flex flex-wrap items-baseline justify-between gap-x-4 mb-2">
-              <h3 class="font-medium">
-                {job.role}{job.type && ` (${job.type})`} · <a href={job.url} target="_blank" rel="noopener" class="link">{job.company}</a>
-              </h3>
-              <span class="text-sm text-[var(--color-text-muted)]">{job.period}</span>
-            </div>
-            
-            <ul class="space-y-1.5 text-sm text-[var(--color-text-secondary)] mb-3">
-              {job.highlights.map((h) => (
-                <li class="pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-[var(--color-text-muted)]">{h}</li>
-              ))}
-            </ul>
-            
-            <p class="text-xs text-[var(--color-text-muted)]">
-              {job.technologies.join(" · ")}
-            </p>
-          </article>
-        ))}
+        {profile.experience.map((job, idx) => {
+          const expKey = idx === 0 ? "jusfy" : idx === 1 ? "beyond" : idx === 2 ? "navalport1" : idx === 3 ? "ausy" : idx === 4 ? "navalport2" : "navalport3";
+          const expT = t.experience[expKey as keyof typeof t.experience];
+          return (
+            <article>
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4 mb-2">
+                <h3 class="font-medium">
+                  {expT.role}{expT.type && ` (${expT.type})`} · <a href={job.url} target="_blank" rel="noopener" class="link">{job.company}</a>
+                </h3>
+                <span class="text-sm text-[var(--color-text-muted)]">{translatePeriod(job.period, t.months, t.present)}</span>
+              </div>
+              
+              <ul class="space-y-1.5 text-sm text-[var(--color-text-secondary)] mb-3">
+                {expT.highlights.map((h) => (
+                  <li class="pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-[var(--color-text-muted)]">{h}</li>
+                ))}
+              </ul>
+              
+              <p class="text-xs text-[var(--color-text-muted)]">
+                {job.technologies.join(" · ")}
+              </p>
+            </article>
+          );
+        })}
       </div>
     </section>
 
     <!-- Projects -->
     <section class="mb-14">
-      <h2 class="section-title">Projects</h2>
+      <h2 class="section-title">{t.sections.projects}</h2>
       
-      {profile.projects.map((project) => (
-        <article>
-          <div class="flex flex-wrap items-baseline gap-x-3 mb-2">
-            <h3 class="font-medium">{project.name}</h3>
-            <span class="text-sm text-[var(--color-text-muted)]">{project.client}</span>
-          </div>
-          
-          <p class="text-sm text-[var(--color-text-secondary)] mb-3">{project.description}</p>
-          
-          <ul class="space-y-1.5 text-sm text-[var(--color-text-secondary)] mb-3">
-            {project.highlights.map((h) => (
-              <li class="pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-[var(--color-text-muted)]">{h}</li>
-            ))}
-          </ul>
-          
-          <p class="text-xs text-[var(--color-text-muted)]">
-            {project.technologies.join(" · ")}
-          </p>
-        </article>
-      ))}
+      {profile.projects.map((project) => {
+        const projT = t.projects.cargosight;
+        return (
+          <article>
+            <div class="flex flex-wrap items-baseline gap-x-3 mb-2">
+              <h3 class="font-medium">{project.name}</h3>
+              <span class="text-sm text-[var(--color-text-muted)]">{project.client}</span>
+            </div>
+            
+            <p class="text-sm text-[var(--color-text-secondary)] mb-3">{projT.description}</p>
+            
+            <ul class="space-y-1.5 text-sm text-[var(--color-text-secondary)] mb-3">
+              {projT.highlights.map((h) => (
+                <li class="pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-[var(--color-text-muted)]">{h}</li>
+              ))}
+            </ul>
+            
+            <p class="text-xs text-[var(--color-text-muted)]">
+              {project.technologies.join(" · ")}
+            </p>
+          </article>
+        );
+      })}
     </section>
 
     <!-- Education -->
     <section class="mb-14">
-      <h2 class="section-title">Education</h2>
+      <h2 class="section-title">{t.sections.education}</h2>
       
       <div class="space-y-6">
-        {profile.education.map((edu) => (
-          <article>
-            <div class="flex flex-wrap items-baseline justify-between gap-x-4 mb-1">
-              <h3 class="font-medium">{edu.degree}</h3>
-              {edu.gpa && <span class="text-sm text-[var(--color-text-muted)]">GPA {edu.gpa}</span>}
-            </div>
-            <p class="text-sm text-[var(--color-text-secondary)] mb-2">
-              <a href={edu.url} target="_blank" rel="noopener" class="link">{edu.institution}</a>
-            </p>
-            <ul class="space-y-1 text-sm text-[var(--color-text-muted)]">
-              {edu.highlights.map((h) => (
-                <li>{h}</li>
-              ))}
-            </ul>
-          </article>
-        ))}
+        {profile.education.map((edu, idx) => {
+          const eduKey = idx === 0 ? "master" : "bachelor";
+          const eduT = t.education[eduKey as keyof typeof t.education];
+          return (
+            <article>
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4 mb-1">
+                <h3 class="font-medium">{eduT.degree}</h3>
+                {edu.gpa && <span class="text-sm text-[var(--color-text-muted)]">GPA {edu.gpa}</span>}
+              </div>
+              <p class="text-sm text-[var(--color-text-secondary)] mb-2">
+                <a href={edu.url} target="_blank" rel="noopener" class="link">
+                  {t.institutions[edu.institution as keyof typeof t.institutions] || edu.institution}
+                </a>
+              </p>
+              <ul class="space-y-1 text-sm text-[var(--color-text-muted)]">
+                {eduT.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            </article>
+          );
+        })}
       </div>
     </section>
 
     <!-- Skills -->
     <section class="mb-14">
-      <h2 class="section-title">Skills</h2>
+      <h2 class="section-title">{t.sections.skills}</h2>
       <p class="text-sm text-[var(--color-text-secondary)]">
         {profile.skills.join(" · ")}
       </p>
@@ -141,16 +197,20 @@ import { profile } from "../config/profile";
 
     <!-- Languages -->
     <section class="mb-14">
-      <h2 class="section-title">Languages</h2>
+      <h2 class="section-title">{t.sections.languages}</h2>
       <p class="text-sm text-[var(--color-text-secondary)]">
-        {profile.languages.map((l) => `${l.name} (${l.level})`).join(" · ")}
+        {profile.languages.map((l) => {
+          const translatedName = t.languageNames[l.name as keyof typeof t.languageNames] || l.name;
+          const translatedLevel = t.languageLevels[l.level as keyof typeof t.languageLevels] || l.level;
+          return `${translatedName} (${translatedLevel})`;
+        }).join(" · ")}
       </p>
     </section>
 
     <!-- Footer -->
     <footer class="pt-8 border-t border-[var(--color-border)]">
       <p class="text-xs text-[var(--color-text-muted)] text-center tracking-wide">
-        Recife, Brazil
+        {t.location}
       </p>
     </footer>
     
