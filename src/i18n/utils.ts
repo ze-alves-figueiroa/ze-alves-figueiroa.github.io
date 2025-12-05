@@ -1,5 +1,6 @@
 import { translations, type Language } from "./translations";
 
+export type { Language };
 export const supportedLanguages: Language[] = ["en", "pt", "fr"];
 export const defaultLanguage: Language = "en";
 
